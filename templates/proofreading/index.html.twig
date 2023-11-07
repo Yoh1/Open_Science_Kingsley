@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProofreadingController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Voir</th>
+                <th>Auteur</th>
+
+            </tr>
+            </thead>
+            <tbody>
+                {% for publication in publications %}
+                <tr>
+                    <td>{{ publication.title }}</td>
+                    <td><a class="btn btn-primary" href="{{ path('relecture_show',{id: publication.id}) }}">Voir</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
