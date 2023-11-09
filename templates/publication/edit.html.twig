@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Publication{% endblock %}
+
+{% block body %}
+    <h1>Edit Publication</h1>
+    <div class="container">
+        {{ include('publication/_form.html.twig', {'button_label': 'Update'}) }}
+        <a class="btn btn-primary" href="{{ path('dashboard') }}">Retour</a>
+    </div>
+
+
+{% endblock %}

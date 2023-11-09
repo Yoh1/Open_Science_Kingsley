@@ -10,7 +10,7 @@
                 <th>Titre</th>
                 <th>Voir</th>
                 <th>Auteur</th>
-
+                <th>like</th>
             </tr>
             </thead>
             <tbody>
@@ -18,6 +18,9 @@
                 <tr>
                     <td>{{ publication.title }}</td>
                     <td><a class="btn btn-primary" href="{{ path('relecture_show',{id: publication.id}) }}">Voir</a></td>
+                    {% if publication.user %}
+                       <td>{{ publication.user.fname ~ ' ' ~  publication.user.name }}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

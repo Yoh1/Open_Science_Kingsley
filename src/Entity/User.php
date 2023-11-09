@@ -37,16 +37,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $fname = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: publication::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Publication::class)]
     private Collection $publications;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: comment::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class)]
     private Collection $comments;
+
+    #[ORM\ManyToMany(targetEntity: Like::class, mappedBy: 'likes')]
+    private Collection $likes;
 
     public function __construct()
     {
         $this->publications = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,5 +205,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            $like->removeLike($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return $this->getId();
     }
 }

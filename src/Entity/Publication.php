@@ -6,6 +6,7 @@ use App\Repository\PublicationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use function Symfony\Component\Translation\t;
 
 #[ORM\Entity(repositoryClass: PublicationRepository::class)]
 class Publication
@@ -24,7 +25,7 @@ class Publication
     #[ORM\ManyToOne(inversedBy: 'publications')]
     private ?User $user = null;
 
-    #[ORM\OneToMany(mappedBy: 'publication', targetEntity: comment::class)]
+    #[ORM\OneToMany(mappedBy: 'publication', targetEntity: Comment::class)]
     private Collection $comments;
 
     public function __construct()
@@ -102,4 +103,10 @@ class Publication
 
         return $this;
     }
+
+   public function __toString(): string
+   {
+       // TODO: Implement __toString() method.
+       return $this->getId();
+   }
 }

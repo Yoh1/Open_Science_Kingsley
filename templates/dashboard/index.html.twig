@@ -3,8 +3,37 @@
 {% block title %}Hello DashboardController!{% endblock %}
 
 {% block body %}
-    <div>
-        <a class="btn btn-success" href="{{ path('publication') }}">cree une publication</a>
+    <div class=" my-3 container row">
+        <div class="col-10">
+            <table class="table">
+              <thead>
+              <tr>
+                  <th>titre</th>
+                  <th>voir</th>
+                  <th>editer</th>
+                  <th>supprimer</th>
+                  <th>like</th>
+              </tr>
+              </thead>
+                <tbody>
+                {% for publication in   publications %}
+                    <tr>
+                        <td>{{  publication.title }}</td>
+                        <td><a class="btn btn-primary" href="{{ path('relecture_show',{id:publication.id}) }}">Voir</a></td>
+                        <td><a class="btn btn-warning" href="{{ path('app_publication_edit',{id:publication.id}) }}">Editer</a></td>
+                        <td>{{ include('publication/_delete_form.html.twig') }} </td>
+
+
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-2">
+            <a class="btn btn-success" href="{{ path('publication') }}">cree une publication</a>
+        </div>
     </div>
+
 
 {% endblock %}
