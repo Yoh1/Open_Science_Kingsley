@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DashboardController!{% endblock %}
+
+{% block body %}
+  <h3 class="text-center my-5">Commentaire des publications</h3>
+  <div class="container">
+    <a class="btn btn-primary" href="{{ path('dashboard') }}">Retour</a>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>auteur</th>
+        <th>commentaire</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for comment in comments %}
+        <tr>
+          <td>
+            {{ comment.user.fname ~ ' ' ~ comment.user.name }}
+          </td>
+          <td>
+            {{ comment.comment }}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock %}

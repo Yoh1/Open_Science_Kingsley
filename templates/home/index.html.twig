@@ -3,18 +3,24 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <main class="container  my-5">
+        <div class=" w-100 row d-flex justify-content-center">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            {% for publication in publications %}
+                {% if publication.countLikes  >= 3 %}
+                <div class="col-4">
+                    <div class="card" style="width: 18rem;">
+                        <iframe src="{{ asset('uploads/pdf/' ~ publication.upload ) }}"></iframe>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ publication.title }}</h5>
+                            <p class="card-text">Auteur: {{ publication.getUser.fname ~ publication.getUser.name  }}</p>
+                            <a href="{{ path('relecture_show',{id: publication.id}) }}" class="btn btn-primary">Voir l'article</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/kingsleythomas/Documents/symfony/Open_Science/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/kingsleythomas/Documents/symfony/Open_Science/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
-</div>
+    </main>
 {% endblock %}

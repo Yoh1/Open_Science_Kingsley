@@ -36,13 +36,13 @@ class PublicationRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Publication
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function countLikes(Publication $publication): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('COUNT(p.likes)')
+            ->andWhere('p.id = :id')
+            ->setParameter('id', $publication)
+            ->getQuery()->getSingleScalarResult();
+    }
+
 }

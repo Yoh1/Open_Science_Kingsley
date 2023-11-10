@@ -6,6 +6,7 @@ use App\Repository\PublicationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\This;
 use function Symfony\Component\Translation\t;
 
 #[ORM\Entity(repositoryClass: PublicationRepository::class)]
@@ -28,9 +29,13 @@ class Publication
     #[ORM\OneToMany(mappedBy: 'publication', targetEntity: Comment::class)]
     private Collection $comments;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'likedPublications')]
+    private Collection $likes;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -108,5 +113,34 @@ class Publication
    {
        // TODO: Implement __toString() method.
        return $this->getId();
+   }
+
+   /**
+    * @return Collection<int, User>
+    */
+   public function getLikes(): Collection
+   {
+       return $this->likes;
+   }
+
+   public function addLike(User $like): static
+   {
+       if (!$this->likes->contains($like)) {
+           $this->likes->add($like);
+       }
+
+       return $this;
+   }
+
+   public function removeLike(User $like): static
+   {
+       $this->likes->removeElement($like);
+
+       return $this;
+   }
+
+   public function countLikes() {
+
+       return count($this->getLikes());
    }
 }

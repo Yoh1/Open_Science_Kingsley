@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Publication;
 use App\Form\PublicationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +24,7 @@ class DashboardController extends AbstractController
     {
         $currentUser = $this->getUser()->getId();
         $publications = $entityManager->getRepository(Publication::class)->findBy(['user' => $currentUser]);
+
         return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'DashboardController',
             'publications' => $publications
@@ -30,6 +32,8 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/dashboard/create', name: 'publication')]
+    #[IsGranted('ROLE_USER')]
+
     public function CreatePublication(Request $request, SluggerInterface $slugger, EntityManagerInterface $entityManager): Response
     {
         $currentUser = $this->getUser();
@@ -65,6 +69,19 @@ class DashboardController extends AbstractController
         }
         return $this->render('dashboard/createPublication.html.twig', [
             'form' => $form
+        ]);
+    }
+
+
+
+    #[Route('/dashboard/comment/{id}', name: 'comment')]
+    #[IsGranted('ROLE_USER')]
+    public function showComment(EntityManagerInterface $entityManager, Request $request, int $id): Response
+    {
+
+         $comment =  $entityManager->getRepository(Comment::class)->findBy(['publication' => $id]);
+        return $this->render('dashboard/comment/viewComment.html.twig',[
+            'comments' => $comment
         ]);
     }
 

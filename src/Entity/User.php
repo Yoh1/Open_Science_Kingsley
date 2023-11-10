@@ -46,11 +46,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Like::class, mappedBy: 'likes')]
     private Collection $likes;
 
+    #[ORM\ManyToMany(targetEntity: Publication::class, mappedBy: 'likes')]
+    private Collection $likedPublications;
+
     public function __construct()
     {
         $this->publications = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->likedPublications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -238,5 +242,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // TODO: Implement __toString() method.
         return $this->getId();
+    }
+
+    /**
+     * @return Collection<int, Publication>
+     */
+    public function getLikedPublications(): Collection
+    {
+        return $this->likedPublications;
+    }
+
+    public function addLikedPublication(Publication $likedPublication): static
+    {
+        if (!$this->likedPublications->contains($likedPublication)) {
+            $this->likedPublications->add($likedPublication);
+            $likedPublication->addLike($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedPublication(Publication $likedPublication): static
+    {
+        if ($this->likedPublications->removeElement($likedPublication)) {
+            $likedPublication->removeLike($this);
+        }
+
+        return $this;
     }
 }

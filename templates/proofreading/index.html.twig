@@ -14,15 +14,25 @@
             </tr>
             </thead>
             <tbody>
-                {% for publication in publications %}
+            {% for publication in publications %}
                 <tr>
                     <td>{{ publication.title }}</td>
-                    <td><a class="btn btn-primary" href="{{ path('relecture_show',{id: publication.id}) }}">Voir</a></td>
+                    <td><a class="btn btn-primary" href="{{ path('relecture_show',{id: publication.id}) }}">Voir</a>
+                    </td>
                     {% if publication.user %}
-                       <td>{{ publication.user.fname ~ ' ' ~  publication.user.name }}</td>
+                        <td>{{ publication.user.fname ~ ' ' ~  publication.user.name }}</td>
+                    {% endif %}
+                    {% if  app.user != publication.user %}
+                    <td>
+                            <a class="btn btn-danger" href="{{ path('like',{id:publication.id}) }}">
+                                <i href="" class="bi bi-heart-fill"></i>
+                            </a>
+
+                        {{ publication.countLikes() }}
+                    </td>
                     {% endif %}
                 </tr>
-                {% endfor %}
+            {% endfor %}
             </tbody>
         </table>
     </div>

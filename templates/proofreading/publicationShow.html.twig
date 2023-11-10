@@ -3,9 +3,26 @@
 {% block title %}Hello ProofreadingController!{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>{{ publication.title }}</h1>
+    <a class=" m-3 btn btn-primary" href="{{ path('relecture') }}">Retour relecture</a>
+    {% if app.user %}
+        <a class=" m-3 btn btn-primary" href="{{ path('dashboard') }}">Retour dashboard</a>
+    {% endif %}
+    <div class="container row m-5 ">
+        <h1 class="text-center">{{ publication.title }}</h1>
+        <div class="col-12 text-center">
+            <iframe src="{{ asset('uploads/pdf/' ~ publication.upload ) }}" width="500" height="600"></iframe>
+        </div>
+        {% if  app.user != publication.user and is_granted('ROLE_USER')  %}
+        <div class="col-12 my-5">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
 
-        <img src="{{ asset('uploads/pdf/' ~ publication.upload ) }}" alt="pdf">
+            {{ form_row(form.comment) }}
+            <button type="submit" class="btn btn-primary my-2">create</button>
+            {{ form_end(form) }}
+
+
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

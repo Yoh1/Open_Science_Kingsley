@@ -4,6 +4,7 @@
 
 {% block body %}
     <div class=" my-3 container row">
+        <div class=" mx-5 text-center alert alert-warning">il faut 3 likes pour être valider par c'est pairs !</div>
         <div class="col-10">
             <table class="table">
               <thead>
@@ -13,6 +14,7 @@
                   <th>editer</th>
                   <th>supprimer</th>
                   <th>like</th>
+                  <th>commentaire</th>
               </tr>
               </thead>
                 <tbody>
@@ -21,10 +23,9 @@
                         <td>{{  publication.title }}</td>
                         <td><a class="btn btn-primary" href="{{ path('relecture_show',{id:publication.id}) }}">Voir</a></td>
                         <td><a class="btn btn-warning" href="{{ path('app_publication_edit',{id:publication.id}) }}">Editer</a></td>
-                        <td>{{ include('publication/_delete_form.html.twig') }} </td>
-
-
-
+                         <td>{{ include('publication/_delete_form.html.twig') }} </td>
+                        <td>{{ publication.countLikes }}</td>
+                        <td><a class="btn btn-primary" href="{{ path('comment',{id:publication.id}) }}">Voir commentaires</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

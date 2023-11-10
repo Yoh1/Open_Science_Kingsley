@@ -6,7 +6,9 @@ use App\Entity\Comment;
 use App\Entity\Publication;
 use App\Form\CommentType;
 use Doctrine\ORM\EntityManagerInterface;
+use mysql_xdevapi\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -19,7 +21,7 @@ class ProofreadingController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $publications = $entityManager->getRepository(Publication::class)->findAll();
-        dump($publications);
+
 
         return $this->render('proofreading/index.html.twig', [
             'publications' => $publications
@@ -27,22 +29,52 @@ class ProofreadingController extends AbstractController
     }
 
     #[Route('/relecture/{id}', name: 'relecture_show')]
-    #[IsGranted('ROLE_USER')]
-    public function show(EntityManagerInterface $entityManager,int $id): Response
+    public function show(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
+        $comment = new Comment();
+        $publication = $entityManager->getRepository(Publication::class)->find($id);
 
+        $form = $this->createForm(CommentType::class);
+        $form->handleRequest($request);
 
-      $form =  $this->createForm(CommentType::class);
-      $comment = new Comment();
-        if($form->isSubmitted() && $form->isValid()){
-            $commentCurrent = $form->get('comment')->getData();
-            $comment->setPublication();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userCurrent = $this->getUser();
+            if($userCurrent !== $publication.$this->getUser()){
+                $commentCurrent = $form->get('comment')->getData();
+
+                $comment->setComment($commentCurrent);
+                $comment->setPublication($publication);
+                $comment->setUser($userCurrent);
+
+                $entityManager->persist($comment);
+                $entityManager->flush();
+
+                return  $this->redirectToRoute('home');
+            } else {
+                throw new \Exception('Un auteur ne peut ce commenter lui même');
+            }
 
         }
 
-        $publication = $entityManager->getRepository(Publication::class)->find($id);
         return $this->render('proofreading/publicationShow.html.twig', [
-            'publication' => $publication
+            'publication' => $publication,
+            'form' => $form
         ]);
+    }
+
+    #[Route('/relecture/like/{id}', name: 'like')]
+    #[IsGranted('ROLE_USER')]
+    public function submitLike(EntityManagerInterface $entityManager, Request $request, int $id): Response
+    {
+        $publicationCurrent = $entityManager->getRepository(Publication::class)->findOneById($id);
+
+        $userCurrent = $this->getUser();
+        if($userCurrent !== $publicationCurrent->getUser()){
+            $publicationCurrent->addLike($userCurrent);
+            $entityManager->flush();
+        } else {
+            throw new Exception('Un user ne peut commenter sont propre article');
+        }
+        return  $this->redirectToRoute('relecture');
     }
 }
